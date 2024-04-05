@@ -1,5 +1,6 @@
 import random
 from faker import Faker
+from datetime import datetime
 
 class Media:
     def __init__(self, title, release_year, genre, views=0):
@@ -90,12 +91,12 @@ if __name__ == "__main__":
         print(serial)
 
     run_generate_views(library)
-    print("\nPo wygenerowaniu odtworzeń:")
+    print("\nLiczba odtworzeń:")
     for media in library:
         print(f"{media.title}: {media.views} odtworzeń")
 
-    print("\nNajpopularniejsze filmy:")
-    print(top_titles(library, 'movies'))
-
-    print("\nNajpopularniejsze seriale:")
-    print(top_titles(library, 'series'))
+    print(f"\nNajpopularniejsze filmy i seriale dnia {datetime.now().strftime('%d.%m.%Y')}:")
+    print("Top 3 najpopularniejsze filmy:")
+    print(top_titles(library, 'movies')[:3])
+    print("Top 3 najpopularniejsze seriale:")
+    print(top_titles(library, 'series')[:3])
