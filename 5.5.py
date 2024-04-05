@@ -51,12 +51,12 @@ def search(library, title):
     return results
 
 def generate_views(library):
-    random_media = random.choice(library)
-    views = random.randint(1, 100)
-    random_media.views += views
+    for media in library:
+        views = random.randint(1, 100)
+        media.views += views
 
-def run_generate_views(library, times=10):
-    for _ in range(times):
+def run_generate_views(library):
+    for _ in range(10):
         generate_views(library)
 
 def top_titles(library, content_type, num_titles=5):
@@ -70,33 +70,32 @@ def top_titles(library, content_type, num_titles=5):
     sorted_library = sorted(filtered_library, key=lambda x: x.views, reverse=True)
     top_titles = [media.title for media in sorted_library][:num_titles]
     return top_titles
-    
-# Generowanie biblioteki filmów i seriali
-library = []
 
-fake = Faker()
-for _ in range(10):  # Generujemy po 10 losowych filmów i seriali
-    library.append(generate_random_movie())
-    library.append(generate_random_tvshow())
+if __name__ == "__main__":
+    library = []
 
-# Testowanie funkcji
-movies = get_movies(library)
-print("Biblioteka filmów:")
-for movie in movies:
-    print(movie)
+    fake = Faker()
+    for _ in range(10): 
+        library.append(generate_random_movie())
+        library.append(generate_random_tvshow())
 
-print("\nBiblioteka seriali:")
-series = get_series(library)
-for serial in series:
-    print(serial)
+    movies = get_movies(library)
+    print("Biblioteka filmów:")
+    for movie in movies:
+        print(movie)
 
-run_generate_views(library)
-print("\nPo wygenerowaniu odtworzeń:")
-for media in library:
-    print(f"{media.title}: {media.views} odtworzeń")
+    print("\nBiblioteka seriali:")
+    series = get_series(library)
+    for serial in series:
+        print(serial)
 
-print("\nNajpopularniejsze filmy:")
-print(top_titles(library, 'movies'))
+    run_generate_views(library)
+    print("\nPo wygenerowaniu odtworzeń:")
+    for media in library:
+        print(f"{media.title}: {media.views} odtworzeń")
 
-print("\nNajpopularniejsze seriale:")
-print(top_titles(library, 'series'))
+    print("\nNajpopularniejsze filmy:")
+    print(top_titles(library, 'movies'))
+
+    print("\nNajpopularniejsze seriale:")
+    print(top_titles(library, 'series'))
