@@ -14,9 +14,6 @@ class Media:
     def __str__(self):
         return f"{self.title} ({self.release_year})"
 
-    def __lt__(self, other):
-        return self.title < other.title
-
 class TVShow(Media):
     def __init__(self, title, release_year, season_number, episode_number):
         super().__init__(title, release_year)
@@ -24,10 +21,7 @@ class TVShow(Media):
         self.episode_number = episode_number
     
     def __str__(self):
-        if self.season_number is not None and self.episode_number is not None:
-            return f"{self.title} S{self.season_number:02}E{self.episode_number:02} ({self.release_year})"
-        else:
-            return f"{self.title} ({self.release_year})"
+        return f"{self.title} S{self.season_number:02}E{self.episode_number:02} ({self.release_year})"
 
 def generate_random_movie():
     fake = Faker()
@@ -43,23 +37,34 @@ def generate_random_tvshow():
     episode_number = random.randint(1, 32)
     return TVShow(title, release_year, season_number, episode_number)
 
-def get_movies_and_series(library):
-    movies = [media for media in library if isinstance(media, Media)]
+def search(library, title):
+    found_items = []
+    for item in library:
+        if item.title.lower() == title.lower():
+            found_items.append(item)
+    return found_items
+
+def get_movies(library):
+    movies = [media for media in library if not isinstance(media, TVShow)]
+    return sorted(movies, key=lambda x: x.title)
+
+def get_series(library):
     series = [media for media in library if isinstance(media, TVShow)]
-    return sorted(movies, key=lambda x: x.title), sorted(series, key=lambda x: x.title)
+    return sorted(series, key=lambda x: x.title)
 
 def generate_views(library):
-    for media in library:
-        views = random.randint(1, 100)
-        media.views += views
+    random_media = random.choice(library)
+    views = random.randint(1, 100)
+    random_media.views += views
 
 def run_generate_views(library):
     for _ in range(10):
-        generate_views(library)
+        random_media = random.choice(library)
+        generate_views([random_media])
 
 def top_titles(library, content_type, num_titles=5):
     if content_type == 'movies':
-        filtered_library = [media for media in library if isinstance(media, Media)]
+        filtered_library = [media for media in library if isinstance(media, Media) and not isinstance(media, TVShow)]
     elif content_type == 'series':
         filtered_library = [media for media in library if isinstance(media, TVShow)]
     else:
@@ -72,16 +77,16 @@ def top_titles(library, content_type, num_titles=5):
 if __name__ == "__main__":
     library = []
 
-    for _ in range(10): 
+    for _ in range(5): 
         library.append(generate_random_movie())
         library.append(generate_random_tvshow())
 
-    movies, series = get_movies_and_series(library)
-
+    movies = get_movies(library)
     print("Biblioteka filmów:")
     for movie in movies:
         print(movie)
 
+    series = get_series(library)
     print("\nBiblioteka seriali:")
     for serial in series:
         print(serial)
