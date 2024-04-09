@@ -51,11 +51,11 @@ def search(library, title):
     return found_items
 
 def get_movies(library):
-    movies = [media for media in library if media.is_movie()]
+    movies = [media for media in library if media.__class__ == Media]
     return sorted(movies, key=lambda x: x.title)
 
 def get_series(library):
-    series = [media for media in library if not media.is_movie()]
+    series = [media for media in library if media.__class__ == TVShow]
     return sorted(series, key=lambda x: x.title)
 
 def generate_views(library):
@@ -68,14 +68,14 @@ def run_generate_views(library):
         random_media = random.choice(library)
         generate_views([random_media])
 
-def top_titles(library, content_type):
+def top_titles(library, content_type, num_titles=5):
     if content_type == 'movies':
         filtered_library = get_movies(library)
     elif content_type == 'series':
         filtered_library = get_series(library)
     
     sorted_library = sorted(filtered_library, key=lambda x: x.views, reverse=True)
-    top_titles = [media.title for media in sorted_library]
+    top_titles = [media.title for media in sorted_library][:num_titles]
     return top_titles
 
 if __name__ == "__main__":
