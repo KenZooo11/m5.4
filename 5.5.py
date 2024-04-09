@@ -13,6 +13,9 @@ class Media:
 
     def __str__(self):
         return f"{self.title} ({self.release_year})"
+    
+    def is_movie(self):
+        return True
 
 class TVShow(Media):
     def __init__(self, title, release_year, season_number, episode_number):
@@ -22,6 +25,9 @@ class TVShow(Media):
     
     def __str__(self):
         return f"{self.title} S{self.season_number:02}E{self.episode_number:02} ({self.release_year})"
+    
+    def is_movie(self):
+        return False
 
 def generate_random_movie():
     fake = Faker()
@@ -45,11 +51,11 @@ def search(library, title):
     return found_items
 
 def get_movies(library):
-    movies = [media for media in library if not isinstance(media, TVShow)]
+    movies = [media for media in library if media.is_movie()]
     return sorted(movies, key=lambda x: x.title)
 
 def get_series(library):
-    series = [media for media in library if isinstance(media, TVShow)]
+    series = [media for media in library if not media.is_movie()]
     return sorted(series, key=lambda x: x.title)
 
 def generate_views(library):
@@ -62,16 +68,14 @@ def run_generate_views(library):
         random_media = random.choice(library)
         generate_views([random_media])
 
-def top_titles(library, content_type, num_titles=5):
+def top_titles(library, content_type):
     if content_type == 'movies':
-        filtered_library = [media for media in library if isinstance(media, Media) and not isinstance(media, TVShow)]
+        filtered_library = get_movies(library)
     elif content_type == 'series':
-        filtered_library = [media for media in library if isinstance(media, TVShow)]
-    else:
-        raise ValueError("Nieprawidłowy typ treści. Wybierz 'movies' lub 'series'.")
+        filtered_library = get_series(library)
     
     sorted_library = sorted(filtered_library, key=lambda x: x.views, reverse=True)
-    top_titles = [media.title for media in sorted_library][:num_titles]
+    top_titles = [media.title for media in sorted_library]
     return top_titles
 
 if __name__ == "__main__":
