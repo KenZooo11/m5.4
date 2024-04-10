@@ -44,13 +44,14 @@ def search(library, title):
             found_items.append(item)
     return found_items
 
+def get_elements(library, search_type):
+    return [media for media in library if type(media) == search_type]
+    
 def get_movies(library):
-    movies = [media for media in library if type(media) == Media]
-    return sorted(movies, key=lambda x: x.title)
+    return get_elements(library, Media)
 
 def get_series(library):
-    series = [media for media in library if type(media) == TVShow]
-    return sorted(series, key=lambda x: x.title)
+    return get_elements(library, TVShow)
 
 def generate_views(library):
     random_media = random.choice(library)
