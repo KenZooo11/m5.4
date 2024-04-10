@@ -13,9 +13,6 @@ class Media:
 
     def __str__(self):
         return f"{self.title} ({self.release_year})"
-    
-    def is_movie(self):
-        return True
 
 class TVShow(Media):
     def __init__(self, title, release_year, season_number, episode_number):
@@ -25,9 +22,6 @@ class TVShow(Media):
     
     def __str__(self):
         return f"{self.title} S{self.season_number:02}E{self.episode_number:02} ({self.release_year})"
-    
-    def is_movie(self):
-        return False
 
 def generate_random_movie():
     fake = Faker()
@@ -51,11 +45,11 @@ def search(library, title):
     return found_items
 
 def get_movies(library):
-    movies = [media for media in library if media.__class__ == Media]
+    movies = [media for media in library if type(media) == Media]
     return sorted(movies, key=lambda x: x.title)
 
 def get_series(library):
-    series = [media for media in library if media.__class__ == TVShow]
+    series = [media for media in library if type(media) == TVShow]
     return sorted(series, key=lambda x: x.title)
 
 def generate_views(library):
@@ -68,7 +62,7 @@ def run_generate_views(library):
         random_media = random.choice(library)
         generate_views([random_media])
 
-def top_titles(library, content_type, num_titles=5):
+def top_titles(library, content_type, num_titles=3):
     if content_type == 'movies':
         filtered_library = get_movies(library)
     elif content_type == 'series':
@@ -102,6 +96,6 @@ if __name__ == "__main__":
 
     print(f"\nNajpopularniejsze filmy i seriale dnia {datetime.now().strftime('%d.%m.%Y')}:")
     print("Top 3 najpopularniejsze filmy:")
-    print(top_titles(library, 'movies')[:3])
+    print(top_titles(library, 'movies'))
     print("Top 3 najpopularniejsze seriale:")
-    print(top_titles(library, 'series')[:3])
+    print(top_titles(library, 'series'))
